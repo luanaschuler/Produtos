@@ -3,6 +3,8 @@ package br.senai.sc.projeto01;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -44,7 +46,33 @@ public class MainActivity extends AppCompatActivity {
         listViewProdutos.setAdapter(adapterProdutos);
 
         definirOnClickListenerListView();
+        definirOnLongClickListener();
     }
+
+   private void definirOnLongClickListener(){
+        listViewProdutos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final Produto produtoClicado = adapterProdutos.getItem(position);
+
+                new AlertDialog.Builder(MainActivity.this)
+                .setIcon(android.R.drawable.ic_delete)
+                .setTitle("Excluir Item")
+                .setMessage("Deseja excluir este item?")
+                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        adapterProdutos.remove(produtoClicado);
+                        adapterProdutos.notifyDataSetChanged();
+                        Toast.makeText(MainActivity.this, "Produto Excluído com Sucesso", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .setNegativeButton("Não", null).show();
+            return true;
+            }
+        });
+   }
+
 
     private void definirOnClickListenerListView() {
         listViewProdutos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
