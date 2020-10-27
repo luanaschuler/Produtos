@@ -13,13 +13,8 @@ import br.senai.sc.projeto01.modelo.Produto;
 
 public class CadastroProdutoActivity extends AppCompatActivity {
 
-    private final int RESULT_CODE_NOVO_PRODUTO = 10;
-    private final int RESULT_CODE_PRODUTO_EDITADO = 11;
-    private final int RESULT_CODE_PRODUTO_EXCLUIDO = 12;
-
-    private boolean edicao = false;
     private int id = 0;
-    private boolean exclusao = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +33,12 @@ public class CadastroProdutoActivity extends AppCompatActivity {
             EditText editTextValor = findViewById(R.id.editText_valor);
             editTextNome.setText(produto.getNome());
             editTextValor.setText(String.valueOf(produto.getValor()));
-            edicao = true;
             id = produto.getId();
-            exclusao = true;
         }
     }
 
     public void onClickVoltar(View v) {
+
         finish();
     }
 
@@ -56,38 +50,23 @@ public class CadastroProdutoActivity extends AppCompatActivity {
         Float valor = Float.parseFloat(editTextValor.getText().toString());
 
         Produto produto = new Produto (nome, valor, id);
-        Intent intent = new Intent();
-        if (edicao) {
-            intent.putExtra("produtoEditado", produto);
-            setResult(RESULT_CODE_PRODUTO_EDITADO, intent);
+        ProdutoDAO produtoDAO = new ProdutoDAO(getBaseContext());
+        boolean salvou = produtoDAO.salvar(produto);
+        if (salvou) {
+            finish();
         } else {
-            ProdutoDAO produtoDAO = new ProdutoDAO(getBaseContext());
-            boolean salvou = produtoDAO.salvar(produto);
-            if (salvou) {
-                finish();
-            } else {
-                Toast.makeText(CadastroProdutoActivity.this, "Erro ao salvar", Toast.LENGTH_LONG).show();
-            }
+            Toast.makeText(CadastroProdutoActivity.this, "Erro ao salvar", Toast.LENGTH_LONG).show();
         }
     }
 
     public void onClickExcluir (View v) {
-        EditText editTextNome = findViewById(R.id.editText_nome);
-        EditText editTextValor = findViewById(R.id.editText_valor);
-
-        String nome = editTextNome.getText().toString();
-        Float valor = Float.parseFloat(editTextValor.getText().toString());
-
-        Produto produto = new Produto(nome, valor, id);
-        Intent intent = new Intent();
-
-        if (exclusao == true) {
-            intent.putExtra("produtoExcluido", produto);
-            setResult(RESULT_CODE_PRODUTO_EXCLUIDO, intent);
+        ProdutoDAO produtoDAO = new ProdutoDAO(getBaseContext());
+        boolean excluir = produtoDAO.excluir(id);
+        if (excluir) {
+            finish();
             Toast.makeText(CadastroProdutoActivity.this, "Produto excluído com sucesso", Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(CadastroProdutoActivity.this, "Erro ao excluir produto.", Toast.LENGTH_LONG).show();
         }
-        finish();
     }
 }

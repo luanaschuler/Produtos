@@ -24,14 +24,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayAdapter<Produto> adapterProdutos;
     private int id = 0;
 
-    private final int REQUEST_CODE_NOVO_PRODUTO = 1;
-    private final int RESULT_CODE_NOVO_PRODUTO = 10;
-    private final int REQUEST_CODE_EDITAR_PRODUTO = 2;
-    private final int RESULT_CODE_PRODUTO_EDITADO = 11;
-    private final int REQUEST_CODE_EXCLUIR_PRODUTO = 3;
-    private final int RESULT_CODE_PRODUTO_EXCLUIDO = 12;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 Produto produtoClicado = adapterProdutos.getItem(position);
                 Intent intent = new Intent(MainActivity.this, CadastroProdutoActivity.class);
                 intent.putExtra("produtoEdicao", produtoClicado);
-                startActivityForResult(intent, REQUEST_CODE_EDITAR_PRODUTO);
+                startActivity(intent);
             }
         });
     }
@@ -94,31 +86,5 @@ public class MainActivity extends AppCompatActivity {
     public void onClickNovoProduto(View v) {
         Intent intent = new Intent(MainActivity.this, CadastroProdutoActivity.class);
         startActivity(intent);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == REQUEST_CODE_EDITAR_PRODUTO && resultCode == RESULT_CODE_PRODUTO_EDITADO) {
-            Produto produtoEditado = (Produto) data.getExtras().getSerializable("produtoEditado");
-            for (int i=0; i < adapterProdutos.getCount(); i++) {
-                Produto produto = adapterProdutos.getItem(i);
-                if (produto.getId() == produtoEditado.getId()) {
-                    adapterProdutos.remove(produto);
-                    adapterProdutos.insert(produtoEditado, i);
-                    break;
-                }
-            }
-            Toast.makeText(MainActivity.this, "Produto Editado", Toast.LENGTH_LONG).show();
-        } else if (requestCode == REQUEST_CODE_EDITAR_PRODUTO && resultCode == RESULT_CODE_PRODUTO_EXCLUIDO) {
-            Produto produtoExcluido = (Produto) data.getExtras().getSerializable("produtoExcluido");
-            for (int i=0; i < adapterProdutos.getCount(); i++) {
-                Produto produto = adapterProdutos.getItem(i);
-                if (produto.getId() == produtoExcluido.getId()) {
-                    adapterProdutos.remove(produto);
-                    break;
-                }
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }

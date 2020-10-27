@@ -40,6 +40,7 @@ public class Produto implements Serializable {
 
     @Override
     public String toString() {
-        return nome;
+
+        return id + " - " + nome;
     }
 }

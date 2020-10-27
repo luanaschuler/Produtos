@@ -24,21 +24,32 @@ public class ProdutoDAO {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ProdutoEntity.COLUMN_NAME_NOME,produto.getNome());
         contentValues.put(ProdutoEntity.COLUMN_NAME_VALOR, produto.getValor());
-        long id = dbGateway.getDatabase().insert(ProdutoEntity.TABLE_NAME,
-                null, contentValues);
-        return id > 0;
+        if (produto.getId() > 0) {
+            return dbGateway.getDatabase().update(ProdutoEntity.TABLE_NAME,
+                    contentValues,
+                    ProdutoEntity._ID + "=?",
+                    new String[]{String.valueOf(produto.getId())}) > 0;
+        }
+        return dbGateway.getDatabase().insert(ProdutoEntity.TABLE_NAME,
+                null, contentValues) > 0;
     }
 
     public List<Produto> listar() {
         List<Produto> produtos = new ArrayList<Produto>();
         Cursor cursor = dbGateway.getDatabase().rawQuery(SQL_LISTAR_TODOS, null);
         while (cursor.moveToNext()) {
-            int id = cursor.getInt(cursor.getColumnIndex(ProdutoEntity._ID));
+            int id = cursor.getInt(cursor.getColumnIndex(ProdutoEntity. _ID));
             String nome = cursor.getString(cursor.getColumnIndex(ProdutoEntity.COLUMN_NAME_NOME));
             Float valor = cursor.getFloat(cursor.getColumnIndex(ProdutoEntity.COLUMN_NAME_VALOR));
             produtos.add(new Produto(nome, valor, id));
         }
         cursor.close();
         return produtos;
+    }
+
+    public boolean excluir(int id) {
+        return dbGateway.getDatabase().delete(ProdutoEntity.TABLE_NAME,
+                ProdutoEntity._ID + "=?",
+                new String[]{String.valueOf(id)}) > 0;
     }
 }
