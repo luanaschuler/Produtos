@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import br.senai.sc.projeto01.database.ProdutoDAO;
 import br.senai.sc.projeto01.modelo.Produto;
 
 public class CadastroProdutoActivity extends AppCompatActivity {
@@ -60,10 +61,14 @@ public class CadastroProdutoActivity extends AppCompatActivity {
             intent.putExtra("produtoEditado", produto);
             setResult(RESULT_CODE_PRODUTO_EDITADO, intent);
         } else {
-            intent.putExtra("novoProduto", produto);
-            setResult(RESULT_CODE_NOVO_PRODUTO, intent);
+            ProdutoDAO produtoDAO = new ProdutoDAO(getBaseContext());
+            boolean salvou = produtoDAO.salvar(produto);
+            if (salvou) {
+                finish();
+            } else {
+                Toast.makeText(CadastroProdutoActivity.this, "Erro ao salvar", Toast.LENGTH_LONG).show();
+            }
         }
-        finish();
     }
 
     public void onClickExcluir (View v) {
