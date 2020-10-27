@@ -54,6 +54,7 @@ public class CadastroProdutoActivity extends AppCompatActivity {
         boolean salvou = produtoDAO.salvar(produto);
         if (salvou) {
             finish();
+            Toast.makeText(CadastroProdutoActivity.this, "Produto salvo com sucesso", Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(CadastroProdutoActivity.this, "Erro ao salvar", Toast.LENGTH_LONG).show();
         }
